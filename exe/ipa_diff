@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "bundler/setup"
+require "ipa_diff"
+require "optparse"
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: ipa_diff [options] <ipa_path1> <ipa_path2>"
+
+  opts.on("-s", "--save_common_strings", "Save common strings to a file") do
+    options[:save_common_strings] = true
+  end
+
+  opts.on("-v", "--verbose", "Enable verbose output") do
+    options[:verbose] = true
+  end
+end.parse!
+
+ipa_path1, ipa_path2 = ARGV
+
+if ipa_path1.nil? || ipa_path2.nil?
+  puts "Usage: ipa_diff [options] <ipa_path1> <ipa_path2>"
+  exit(1)
+end
+
+IpaDiff.compare(ipa_path1, ipa_path2, save_common_strings: options[:save_common_strings], verbose: options[:verbose])
